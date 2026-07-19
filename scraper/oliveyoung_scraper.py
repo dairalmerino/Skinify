@@ -25,6 +25,7 @@ Notes:
     - User-agent identifies this as a portfolio research project
 """
 
+from typing import Optional
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -66,7 +67,7 @@ REQUEST_DELAY = 2.0  # seconds between requests
 
 # ── Step 1: Get all product URLs from sitemap ─────────────────────────────────
 
-def get_product_urls_from_sitemap() -> list[str]:
+def get_product_urls_from_sitemap() -> list:
     """
     Parse the Olive Young product sitemap and return all product URLs.
     Much more reliable than paginating through category pages.
@@ -90,7 +91,7 @@ def get_product_urls_from_sitemap() -> list[str]:
 
 # ── Step 2: Load checkpoint (resume if interrupted) ───────────────────────────
 
-def load_checkpoint() -> set[str]:
+def load_checkpoint() -> set:
     """Return the set of URLs already scraped in a previous run."""
     if CHECKPOINT.exists():
         completed = set(CHECKPOINT.read_text().strip().splitlines())
@@ -107,7 +108,7 @@ def save_checkpoint(url: str):
 
 # ── Step 3: Parse a single product page ───────────────────────────────────────
 
-def get_page(url: str) -> BeautifulSoup | None:
+def get_page(url: str) -> Optional[BeautifulSoup]:
     """Fetch a URL and return a BeautifulSoup object, or None on failure."""
     try:
         response = requests.get(url, headers=HEADERS, timeout=10)
@@ -128,7 +129,7 @@ def is_skincare(soup: BeautifulSoup) -> bool:
     return len(breadcrumb_links) > 0
 
 
-def parse_product_page(url: str) -> dict | None:
+def parse_product_page(url: str) -> Optional[dict]:
     """
     Parse a single product page and extract structured data.
     Returns a dict of product fields, or None if parsing fails.
