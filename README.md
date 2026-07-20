@@ -15,6 +15,8 @@ Skinify takes a different approach. Rather than following trends, Skinify center
 - **Ingredient-based recommendations** matched to your skin type using a curated ingredient-to-skin-condition lookup table
 - **Plain-language explanations** for every recommendation so you know exactly why a product was suggested
 - **Products from Sephora, Ulta, and Olive Young US** — US-available only, no TikTok products you can't find
+- **Focused on facial skincare** — recommendations cover face-targeted categories 
+including cleansers, moisturizers, serums, toners, sunscreens, masks, and treatments
 
 ---
 
