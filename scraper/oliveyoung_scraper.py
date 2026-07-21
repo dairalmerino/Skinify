@@ -184,7 +184,9 @@ def parse_product_page(url: str) -> Optional[dict]:
                 combined = combined.strip()
 
                 # Validate: ingredient lists are long comma-separated strings
-                if len(combined) > 30 and "," in combined:
+                if len(combined) > 30 and ("," in combined or ";" in combined):
+                    # normalize semicolons to commas for consistency:
+                    combined = combined.replace(";",",")
                     ingredients_clean = re.sub(r"\s+", " ", combined)
                     ingredient_list = [
                         ing.strip()
@@ -286,14 +288,57 @@ def save_results(df: pd.DataFrame):
 
 
 if __name__ == "__main__":
-    log.info("Starting Skinify — Olive Young US scraper")
-    log.info(f"Request delay: {REQUEST_DELAY}s between requests")
-    log.info("Progress is saved after every product — safe to interrupt with Ctrl+C\n")
+    import sys
 
-    df = scrape()
+    # Normal mode: scrape everything
+    # Targeted mode: python oliveyoung_scraper.py --rescrape-missing
+    if "--rescrape-missing" in sys.argv:
+        log.info("TARGETED MODE: re-scraping products with missing ingredients")
+        missing_file = OUTPUT_DIR / "missing_ingredients_urls.txt"
 
-    if df.empty:
-        log.warning("No products scraped. Check your internet connection and try again.")
+        if not missing_file.exists():
+            log.error("missing_ingredients_urls.txt not found in data/olive_young/")
+            sys.exit(1)
+
+        missing_urls = missing_file.read_text().strip().splitlines()
+        log.info(f"Found {len(missing_urls)} URLs to re-scrape\n")
+
+        # Load existing clean data
+        existing = pd.read_csv(
+            OUTPUT_DIR / "oliveyoung_skincare_clean.csv"
+        )
+
+        updated = 0
+        for i, url in enumerate(missing_urls):
+            log.info(f"[{i+1}/{len(missing_urls)}] {url}")
+            product = parse_product_page(url)
+
+            if product and product["ingredients_raw"]:
+                # Update the row in existing dataframe
+                mask = existing["url"] == url
+                for col in ["ingredients_raw", "ingredient_count", "ingredients_list"]:
+                    existing.loc[mask, col] = product[col]
+                updated += 1
+                log.info(f"  ✓ Fixed: {product['ingredient_count']} ingredients found")
+            else:
+                log.warning(f"  – Still no ingredients found")
+
+            time.sleep(REQUEST_DELAY)
+
+        # Save updated file
+        existing.to_csv(
+            OUTPUT_DIR / "oliveyoung_skincare_clean.csv",
+            index=False
+        )
+        log.info(f"\nDone! Fixed {updated}/{len(missing_urls)} products")
+
     else:
-        save_results(df)
-        log.info("\nDone! Check the data/ folder for your CSV files.")
+        log.info("Starting Skinify — Olive Young US scraper")
+        log.info(f"Request delay: {REQUEST_DELAY}s between requests")
+        log.info("Progress is saved after every product — safe to interrupt with Ctrl+C\n")
+        df = scrape()
+        if df.empty:
+            log.warning("No products scraped.")
+        else:
+            save_results(df)
+            log.info("\nDone! Check the data/ folder for your CSV files.")
