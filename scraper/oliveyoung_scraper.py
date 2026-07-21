@@ -287,14 +287,14 @@ def save_results(df: pd.DataFrame):
     ].head(5).to_string(index=False))
 
 
+#----rescraoe-missing block
+
 if __name__ == "__main__":
     import sys
 
-    # Normal mode: scrape everything
-    # Targeted mode: python oliveyoung_scraper.py --rescrape-missing
     if "--rescrape-missing" in sys.argv:
         log.info("TARGETED MODE: re-scraping products with missing ingredients")
-        missing_file = OUTPUT_DIR / "missing_ingredients_urls.txt"
+        missing_file = Path("data/olive_young/missing_ingredients_urls.txt")
 
         if not missing_file.exists():
             log.error("missing_ingredients_urls.txt not found in data/olive_young/")
@@ -304,9 +304,7 @@ if __name__ == "__main__":
         log.info(f"Found {len(missing_urls)} URLs to re-scrape\n")
 
         # Load existing clean data
-        existing = pd.read_csv(
-            OUTPUT_DIR / "oliveyoung_skincare_clean.csv"
-        )
+        existing = pd.read_csv("data/olive_young/oliveyoung_skincare_clean.csv")
 
         updated = 0
         for i, url in enumerate(missing_urls):
@@ -314,7 +312,6 @@ if __name__ == "__main__":
             product = parse_product_page(url)
 
             if product and product["ingredients_raw"]:
-                # Update the row in existing dataframe
                 mask = existing["url"] == url
                 for col in ["ingredients_raw", "ingredient_count", "ingredients_list"]:
                     existing.loc[mask, col] = product[col]
@@ -326,10 +323,7 @@ if __name__ == "__main__":
             time.sleep(REQUEST_DELAY)
 
         # Save updated file
-        existing.to_csv(
-            OUTPUT_DIR / "oliveyoung_skincare_clean.csv",
-            index=False
-        )
+        existing.to_csv("data/olive_young/oliveyoung_skincare_clean.csv", index=False)
         log.info(f"\nDone! Fixed {updated}/{len(missing_urls)} products")
 
     else:
