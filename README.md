@@ -80,8 +80,8 @@ User quiz input (checklist + free text)
 | Phase | Status |
 |---|---|
 | Data acquisition (Olive Young scraper) | ✅ In progress |
-| Data acquisition (Sephora + Ulta Kaggle datasets) | 🔄 Upcoming |
-| Data cleaning + ingredient mapping | ⬜ Upcoming |
+| Data acquisition (Sephora + Ulta Kaggle datasets) | ✅ Upcoming |
+| Data cleaning + ingredient mapping | 🔄 Upcoming |
 | NLP pipeline | ⬜ Upcoming |
 | Skin type classifier | ⬜ Upcoming |
 | Recommendation system | ⬜ Upcoming |
