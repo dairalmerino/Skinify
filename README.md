@@ -62,6 +62,17 @@ Skinify/
 
 ---
 
+## Known Limitations
+
+- **Sephora catalog coverage:** 37 brands added to Sephora's catalog in
+  2024–2026 (e.g. rhode, Biodance, Fenty Beauty) are not yet reflected in
+  the merged dataset. Free scraping and a low-cost paid API route were
+  both investigated — see [`scraper/sephora_brand_backfill_attempt/`](scraper/sephora_brand_backfill_attempt/)
+  — and deprioritized for v1 given timeline constraints. Flagged as
+  future work.
+
+---
+
 ## Pipeline Overview
 
 ```
@@ -79,17 +90,16 @@ User quiz input (checklist + free text)
 
 | Phase | Status |
 |---|---|
-| Data acquisition (Olive Young scraper) | ✅ In progress |
-| Data acquisition (Sephora + Ulta Kaggle datasets) | ✅ Upcoming |
-| Data cleaning + ingredient mapping | 🔄 Upcoming |
+| Data acquisition (Olive Young scraper) | ✅ Done |
+| Data acquisition (Sephora + Ulta Kaggle datasets) | ✅ Done |
+| Data cleaning + ingredient mapping | 🔄 In progress |
 | NLP pipeline | ⬜ Upcoming |
 | Skin type classifier | ⬜ Upcoming |
 | Recommendation system | ⬜ Upcoming |
 | FastAPI backend | ⬜ Upcoming |
 | React frontend | ⬜ Upcoming |
 | Deployment | ⬜ Upcoming |
-
----
+| Sephora brand backfill (38 newer brands) | ⬜ Future work — see Known Limitations |
 
 ## Setup
 
