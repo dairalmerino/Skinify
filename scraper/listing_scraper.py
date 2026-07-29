@@ -1,7 +1,7 @@
 """
 Free listing scraper — Sephora brand/skincare pages.
 
-Goal: get an exact, real product count + product URLs/SKU IDs for all 37
+Goal: get an exact, real product count + product URLs/SKU IDs for all 38
 missing brands WITHOUT spending any RapidAPI budget. Sephora's brand pages
 already split by subcategory in the URL (e.g. /brand/rhode-hailey-bieber/
 skincare vs /makeup-cosmetics), and that listing HTML is server-rendered —
@@ -28,6 +28,11 @@ from bs4 import BeautifulSoup
 # CONFIG
 # ---------------------------------------------------------------------------
 
+# TODO: fill in the rest. For each brand, go to sephora.com, search the brand,
+# open its page, click into "Skincare" (if it has a dedicated skincare
+# subcategory — most do), and copy that URL. Takes ~15-20 min for all 38,
+# one time, and guarantees the URL is right (brand slugs aren't guessable —
+# e.g. "Beauty of Joseon" might not be /brand/beauty-of-joseon).
 BRAND_URLS = {
     "rhode": "https://www.sephora.com/brand/rhode-hailey-bieber/skincare",
     "Biodance": "https://www.sephora.com/brand/biodance",
@@ -70,14 +75,22 @@ BRAND_URLS = {
 
 HEADERS = {
     "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Referer": "https://www.google.com/",
+    "Sec-Fetch-Dest": "document",
+    "Sec-Fetch-Mode": "navigate",
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-Fetch-User": "?1",
+    "Upgrade-Insecure-Requests": "1",
+    "Connection": "keep-alive",
 }
 
-REQUEST_DELAY_SECONDS = 3  # be polite, space out requests
+REQUEST_DELAY_SECONDS = 5  # Sephora's robots.txt specifies Crawl-delay: 5 — respect it
 
 OUT_DIR = Path("skinify_scraper_output")
 OUT_DIR.mkdir(exist_ok=True)
