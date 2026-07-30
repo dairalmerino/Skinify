@@ -70,6 +70,12 @@ Skinify/
   both investigated — see [`scraper/sephora_brand_backfill_attempt/`](scraper/sephora_brand_backfill_attempt/)
   — and deprioritized for v1 given timeline constraints. Flagged as
   future work.
+- **Product availability drift:** A small number of products (identified during
+  brand-name cleanup) are no longer actively sold at their original retailer
+  (e.g., discontinued at Ulta). Ingredient data remains valid for matching
+  purposes, but "buy now" links may occasionally point to delisted products.
+  Not yet systematically audited — flagged for future work if a purchase-link
+  feature is added.
 
 ---
 
