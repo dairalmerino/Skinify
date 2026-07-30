@@ -67,16 +67,28 @@ Skinify/
 - **Sephora catalog coverage:** 37 brands added to Sephora's catalog in
   2024–2026 (e.g. rhode, Biodance, Fenty Beauty) are not yet reflected in
   the merged dataset. Free scraping and a low-cost paid API route were
-  both investigated — see [`scraper/sephora_brand_backfill_attempt/`](scraper/sephora_brand_backfill_attempt/)
+  both investigated, see [`scraper/sephora_brand_backfill_attempt/`](scraper/sephora_brand_backfill_attempt/)
   — and deprioritized for v1 given timeline constraints. Flagged as
   future work.
 - **Product availability drift:** A small number of products (identified during
   brand-name cleanup) are no longer actively sold at their original retailer
   (e.g., discontinued at Ulta). Ingredient data remains valid for matching
   purposes, but "buy now" links may occasionally point to delisted products.
-  Not yet systematically audited — flagged for future work if a purchase-link
+  Not yet systematically audited and flagged for future work if a purchase-link
   feature is added.
-
+- **Ulta ingredient text truncation:** Ulta's ingredient lists systematically
+  drop trailing descriptor words on multi-word ingredient names (e.g.
+  "Camelina Sativa Seed Oil" appears as "Camelina Sativa Seed") compared to
+  the same products' listings on Sephora. Identified during duplicate
+  reconciliation across ~200 products present in both stores. Where a
+  product existed in both sources, the more complete (longer) ingredient
+  list was kept; this is a known scrape-level limitation of the Ulta source
+  overall, not corrected at the source level.
+- **Cross-store duplicate reconciliation:** ~200 products appeared in more
+  than one store. Ingredient lists were compared and merged automatically
+  when they agreed (after normalizing for casing/formatting/order); a small
+  number (~20) had genuinely divergent ingredient lists and were reviewed
+  manually to distinguish real reformulations from mismatched entries.
 ---
 
 ## Pipeline Overview
